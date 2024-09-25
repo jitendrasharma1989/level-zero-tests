@@ -20,6 +20,8 @@ namespace fs = boost::filesystem;
 namespace bp = boost::process;
 namespace bi = boost::interprocess;
 
+#define THREAD_CONTROL_WAIT_TIME 200
+
 TEST(
     zetDeviceGetDebugPropertiesTest,
     GivenValidDeviceWhenGettingDebugPropertiesThenPropertiesReturnedSuccessfully) {
@@ -1646,7 +1648,7 @@ void zetDebugThreadControlTest::run_interrupt_resume_test(
 
     LOG_DEBUG << "[Debugger] Resumming ALL threads";
     lzt::debug_resume(debugSession, thread);
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(THREAD_CONTROL_WAIT_TIME));
 
     newly_stopped_threads.clear();
     newly_stopped_threads = get_stopped_threads(debugSession, device);
@@ -1757,7 +1759,8 @@ void zetDebugThreadControlTest::run_interrupt_resume_test(
 
       print_thread("[Debugger] Resuming thread: ", thread, INFO);
       lzt::debug_resume(debugSession, thread);
-      std::this_thread::sleep_for(std::chrono::seconds(2));
+      std::this_thread::sleep_for(
+          std::chrono::seconds(THREAD_CONTROL_WAIT_TIME));
       newly_stopped_threads.clear();
       newly_stopped_threads = get_stopped_threads(debugSession, device);
       // All threads should be running or terminated
